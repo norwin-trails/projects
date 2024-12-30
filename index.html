@@ -45,8 +45,9 @@
       .container {
         max-width: none !important;
         width: 100% !important;
-        padding: 0 30px !important;
+        padding: 0 15px !important;
         margin: 0 !important;
+        box-sizing: border-box !important;
       }
 
       .markdown-body {
@@ -55,7 +56,8 @@
 
       .container {
         display: flex !important;
-        margin-bottom: 50px !important;
+        margin-bottom: 20px !important;
+        flex-direction: row;
       }
 
       .info-panel {
@@ -72,6 +74,44 @@
       #map {
         height: 900px;
         width: 100%;
+      }
+
+      /* Mobile responsive styles */
+      @media screen and (max-width: 768px) {
+        body {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .container {
+          flex-direction: column !important;
+          order: 1;
+          margin-bottom: 0 !important;
+          padding: 0 !important;
+        }
+
+        .info-panel {
+          display: none;
+        }
+
+        .map-container {
+          width: 100%;
+          padding: 0;
+        }
+
+        #map {
+          height: 75vh;
+        }
+
+        .markdown-body {
+          order: 2;
+          padding: 20px 15px !important;
+        }
+
+        .markdown-body h1:first-child {
+          font-size: 2em !important;
+          margin: 0 15px 15px !important;
+        }
       }
     </style>
   </head>
@@ -137,8 +177,9 @@
     </script>
 
     <div class="markdown-body">
-      <h3>About The</h3>
+      <h3>About</h3>
       <p>
+        The
         <a href="https://github.com/norwin-trails/braddocks-trail"
           >norwin-trails/braddocks-trail</a
         >
