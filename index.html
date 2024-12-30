@@ -8,6 +8,10 @@
       name="description"
       content="GIS data and trail information for Braddock's Trail Park by Friends of Norwin Trails"
     />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
     <style>
       /* Style the GitHub Pages title */
       .markdown-body h1:first-child {
@@ -70,10 +74,6 @@
         width: 100%;
       }
     </style>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
   </head>
   <body>
     <div class="container">
@@ -85,26 +85,55 @@
       </div>
     </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
     <script>
-      const map = L.map("map").setView([40.302799, -79.774776], 16);
+      // Load the Mapbox token based on environment
+      const MAPBOX_TOKEN = (() => {
+        // Check if a development token is available in localStorage
+        const devToken = localStorage.getItem("mapbox_dev_token");
+        if (devToken) return devToken;
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map);
+        // Fall back to production token if no dev token is set
+        return "pk.eyJ1IjoiZG5hayIsImEiOiJjbTViY3dtamQycTQ0Mm1wcTZxd3ltNG82In0.XfOFWaiX-Usb8PUqD6lSFQ"; // Replace this with your production token
+      })();
 
-      fetch("switch-board.geojson")
-        .then((response) => response.json())
-        .then((data) => {
-          L.geoJSON(data, {
-            style: {
-              color: "#eaaa00",
-              weight: 3,
-              opacity: 0.85,
-            },
-          }).addTo(map);
-        });
+      // For development: You can set your dev token in the browser console with:
+      // localStorage.setItem('mapbox_dev_token', 'your-dev-token-here')
+
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+
+      const map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/mapbox/outdoors-v12", // You can replace this with your custom style URL
+        center: [-79.774776, 40.302799],
+        zoom: 16,
+      });
+
+      map.on("load", () => {
+        fetch("switch-board.geojson")
+          .then((response) => response.json())
+          .then((data) => {
+            map.addSource("trails", {
+              type: "geojson",
+              data: data,
+            });
+
+            map.addLayer({
+              id: "trails-layer",
+              type: "line",
+              source: "trails",
+              layout: {
+                "line-join": "round",
+                "line-cap": "round",
+              },
+              paint: {
+                "line-color": "#eaaa00",
+                "line-width": 3,
+                "line-opacity": 0.85,
+              },
+            });
+          });
+      });
     </script>
 
     <div class="markdown-body">
