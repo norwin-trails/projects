@@ -12,7 +12,24 @@
       href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        font-family: "Open Sans", sans-serif;
+      }
+
       /* Style the GitHub Pages title */
       .markdown-body h1:first-child {
         font-size: 2.5em !important;
@@ -37,96 +54,149 @@
         color: #eaaa00 !important;
       }
 
-      /* Override GitHub Pages container width */
-      .markdown-body,
-      .markdown-body .container,
-      header.container,
-      div.container,
-      .container {
-        max-width: none !important;
-        width: 100% !important;
-        padding: 0 15px !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-      }
-
-      .markdown-body {
-        box-sizing: border-box;
-      }
-
-      .container {
-        display: flex !important;
-        margin-bottom: 20px !important;
-        flex-direction: row;
-      }
-
-      .info-panel {
-        width: 30%;
-        padding: 20px;
-        box-sizing: border-box;
-      }
-
       .map-container {
-        width: 70%;
-        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
       }
 
       #map {
-        height: 900px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
         width: 100%;
+      }
+
+      .about-panel {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        font-size: 13px;
+      }
+
+      .about-panel h3 {
+        margin: 0 0 8px 0;
+        color: #002855;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .about-panel h3 .material-icons {
+        font-size: 16px;
+      }
+
+      .about-toggle {
+        display: none;
+        width: 100%;
+        padding: 6px 0;
+        background: none;
+        border: none;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Open Sans", sans-serif;
+        color: #002855;
+        cursor: pointer;
+      }
+
+      .about-toggle .material-icons {
+        font-size: 18px;
+        float: right;
+        transition: transform 0.3s ease;
+      }
+
+      .about-toggle.collapsed .material-icons {
+        transform: rotate(-90deg);
+      }
+
+      .about-content {
+        transition: max-height 0.3s ease-out;
+        overflow: hidden;
+        line-height: 1.5;
       }
 
       /* Mobile responsive styles */
       @media screen and (max-width: 768px) {
-        body {
+        .about-panel {
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+          max-width: none;
+          padding: 10px 15px;
+        }
+
+        .about-toggle {
           display: flex;
-          flex-direction: column;
+          align-items: center;
+          justify-content: space-between;
         }
 
-        .container {
-          flex-direction: column !important;
-          order: 1;
-          margin-bottom: 0 !important;
-          padding: 0 !important;
-        }
-
-        .info-panel {
+        .about-panel h3 {
           display: none;
         }
 
-        .map-container {
-          width: 100%;
-          padding: 0;
+        .about-content {
+          max-height: 0;
+          margin-top: 0;
         }
 
-        #map {
-          height: 75vh;
-        }
-
-        .markdown-body {
-          order: 2;
-          padding: 20px 15px !important;
-        }
-
-        .markdown-body h1:first-child {
-          font-size: 2em !important;
-          margin: 0 15px 15px !important;
+        .about-content.expanded {
+          max-height: 300px;
+          margin-top: 10px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="info-panel">
-        <!-- Space for additional information -->
-      </div>
-      <div class="map-container">
-        <div id="map"></div>
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+    <div class="about-panel">
+      <h3><span class="material-icons">info</span>About</h3>
+      <button class="about-toggle collapsed">
+        <span>About</span>
+        <span class="material-icons">expand_more</span>
+      </button>
+      <div class="about-content">
+        <p>
+          The
+          <a href="https://github.com/norwin-trails/braddocks-trail"
+            >norwin-trails/braddocks-trail</a
+          >
+          repository stores GIS data for Braddock's Trail Park.
+          <br />
+          <br />
+          Data was collected by
+          <a href="https://norwintrails.org">Friends of Norwin Trails</a>, a
+          501(c)(3) organization committed to establishing safe and accessible
+          recreational bicycling and walking opportunities in the Norwin area.
+        </p>
       </div>
     </div>
 
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
     <script>
+      // Add toggle functionality for mobile
+      document
+        .querySelector(".about-toggle")
+        .addEventListener("click", function () {
+          this.classList.toggle("collapsed");
+          document.querySelector(".about-content").classList.toggle("expanded");
+        });
+
       // Load the Mapbox token based on environment
       const MAPBOX_TOKEN = (() => {
         // Check if a development token is available in localStorage
@@ -158,7 +228,7 @@
         "Look Out": "#E9C46A",
         "Look Out East": "#F4A261",
         "No Name": "#457B9D",
-        "No Name North Loop": "#A8DADC",
+        "No Name North Loop": "#4A7B8B",
         "South Connector": "#E76F51",
         "South End": "#264653",
         "Switch Board": "#FFB703",
@@ -211,23 +281,35 @@
                 "line-opacity": 0.85,
               },
             });
+
+            // Add labels layer
+            map.addLayer({
+              id: "trail-labels",
+              type: "symbol",
+              source: "trails",
+              layout: {
+                "text-field": ["get", "Name"],
+                "text-size": 12,
+                "symbol-placement": "line",
+                "text-offset": [0, -1],
+                "text-anchor": "center",
+                "text-allow-overlap": false,
+                "text-ignore-placement": false,
+                "text-max-angle": 30,
+                "text-letter-spacing": 0.1,
+                "text-padding": 10,
+                "symbol-spacing": 400,
+                "text-keep-upright": true,
+              },
+              paint: {
+                "text-color": "#000000",
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 2,
+                "text-halo-blur": 1,
+              },
+            });
           });
       });
     </script>
-
-    <div class="markdown-body">
-      <h3>About</h3>
-      <p>
-        The
-        <a href="https://github.com/norwin-trails/braddocks-trail"
-          >norwin-trails/braddocks-trail</a
-        >
-        repository stores GIS data for Braddock's Trail Park. All data was
-        collected by
-        <a href="https://norwintrails.org">Friends of Norwin Trails</a>, a
-        501(c)(3) organization committed to establishing safe and accessible
-        recreational bicycling and walking opportunities in the Norwin area.
-      </p>
-    </div>
   </body>
 </html>
