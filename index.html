@@ -144,10 +144,25 @@
 
       const map = new mapboxgl.Map({
         container: "map",
-        style: "mapbox://styles/mapbox/outdoors-v12", // You can replace this with your custom style URL
+        //style: "mapbox://styles/mapbox/outdoors-v12", // You can replace this with your custom style URL
+        style: "mapbox://styles/dnak/cm3ua6jw3000801qrfm6f1rqn",
         center: [-79.774776, 40.302799],
         zoom: 16,
       });
+
+      // Define trail colors
+      const trailColors = {
+        Christmas: "#E63946",
+        "Eagle #1": "#1D3557",
+        Forest: "#2A9D8F",
+        "Look Out": "#E9C46A",
+        "Look Out East": "#F4A261",
+        "No Name": "#457B9D",
+        "No Name North Loop": "#A8DADC",
+        "South Connector": "#E76F51",
+        "South End": "#264653",
+        "Switch Board": "#FFB703",
+      };
 
       map.on("load", () => {
         fetch("braddocks-trail-trails.geojson")
@@ -167,7 +182,31 @@
                 "line-cap": "round",
               },
               paint: {
-                "line-color": "#ca03fc",
+                "line-color": [
+                  "match",
+                  ["get", "Name"],
+                  "Christmas",
+                  trailColors["Christmas"],
+                  "Eagle #1",
+                  trailColors["Eagle #1"],
+                  "Forest",
+                  trailColors["Forest"],
+                  "Look Out",
+                  trailColors["Look Out"],
+                  "Look Out East",
+                  trailColors["Look Out East"],
+                  "No Name",
+                  trailColors["No Name"],
+                  "No Name North Loop",
+                  trailColors["No Name North Loop"],
+                  "South Connector",
+                  trailColors["South Connector"],
+                  "South End",
+                  trailColors["South End"],
+                  "Switch Board",
+                  trailColors["Switch Board"],
+                  "#666666", // default color for any unmatched names
+                ],
                 "line-width": 3,
                 "line-opacity": 0.85,
               },
