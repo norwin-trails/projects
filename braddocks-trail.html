@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Braddock's Trail Park - Friends of Norwin Trails</title>
+    <meta
+      name="description"
+      content="GIS data and trail information for Braddock's Trail Park by Friends of Norwin Trails"
+    />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        font-family: "Open Sans", sans-serif;
+      }
+
+      /* Style the GitHub Pages title */
+      .markdown-body h1:first-child {
+        font-size: 2.5em !important;
+        color: #002855 !important;
+        font-weight: 600 !important;
+        padding: 20px 0 !important;
+        margin: 0 30px 20px !important;
+        border-bottom: 3px solid #eaaa00 !important;
+      }
+
+      /* Style links */
+      .markdown-body a {
+        color: #002855 !important;
+        text-decoration: underline !important;
+      }
+
+      .markdown-body h1:first-child a {
+        text-decoration: none !important;
+      }
+
+      .markdown-body a:hover {
+        color: #eaaa00 !important;
+      }
+
+      .map-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .about-panel {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        font-size: 13px;
+      }
+
+      .about-panel h3 {
+        margin: 0 0 8px 0;
+        color: #002855;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .about-panel h3 .material-icons {
+        font-size: 16px;
+      }
+
+      .about-toggle {
+        display: none;
+        width: 100%;
+        padding: 6px 0;
+        background: none;
+        border: none;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Open Sans", sans-serif;
+        color: #002855;
+        cursor: pointer;
+      }
+
+      .about-toggle .material-icons {
+        font-size: 18px;
+        float: right;
+        transition: transform 0.3s ease;
+      }
+
+      .about-toggle.collapsed .material-icons {
+        transform: rotate(-90deg);
+      }
+
+      .about-content {
+        transition: max-height 0.3s ease-out;
+        overflow: hidden;
+        line-height: 1.5;
+      }
+
+      /* Mobile responsive styles */
+      @media screen and (max-width: 768px) {
+        .about-panel {
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+          max-width: none;
+          padding: 10px 15px;
+        }
+
+        .about-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .about-panel h3 {
+          display: none;
+        }
+
+        .about-content {
+          max-height: 0;
+          margin-top: 0;
+        }
+
+        .about-content.expanded {
+          max-height: 300px;
+          margin-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+    <div class="about-panel">
+      <h3><span class="material-icons">info</span>About</h3>
+      <button class="about-toggle collapsed">
+        <span>About</span>
+        <span class="material-icons">expand_more</span>
+      </button>
+      <div class="about-content">
+        <p>
+          The
+          <a href="https://github.com/norwin-trails/braddocks-trail"
+            >norwin-trails/braddocks-trail</a
+          >
+          repository stores GIS data for Braddock's Trail Park.
+          <br />
+          <br />
+          Data was collected by
+          <a href="https://norwintrails.org">Friends of Norwin Trails</a>, a
+          501(c)(3) organization committed to establishing safe and accessible
+          recreational bicycling and walking opportunities in the Norwin area.
+        </p>
+      </div>
+    </div>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
+    <script>
+      // Add toggle functionality for mobile
+      document
+        .querySelector(".about-toggle")
+        .addEventListener("click", function () {
+          this.classList.toggle("collapsed");
+          document.querySelector(".about-content").classList.toggle("expanded");
+        });
+
+      // Load the Mapbox token based on environment
+      const MAPBOX_TOKEN = (() => {
+        // Check if a development token is available in localStorage
+        const devToken = localStorage.getItem("mapbox_dev_token");
+        if (devToken) return devToken;
+
+        // Fall back to production token if no dev token is set
+        return "pk.eyJ1IjoiZG5hayIsImEiOiJjbTViY3dtamQycTQ0Mm1wcTZxd3ltNG82In0.XfOFWaiX-Usb8PUqD6lSFQ"; // Replace this with your production token
+      })();
+
+      // For development: You can set your dev token in the browser console with:
+      // localStorage.setItem('mapbox_dev_token', 'your-dev-token-here')
+
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+
+      const map = new mapboxgl.Map({
+        container: "map",
+        //style: "mapbox://styles/mapbox/outdoors-v12", // You can replace this with your custom style URL
+        style: "mapbox://styles/dnak/cm3ua6jw3000801qrfm6f1rqn",
+        center: [-79.774776, 40.302799],
+        zoom: 15,
+      });
+
+      // Define trail colors
+      const trailColors = {
+        Christmas: "#E63946",
+        "Eagle #1": "#1D3557",
+        Forest: "#2A9D8F",
+        "Look Out": "#E9C46A",
+        "Look Out East": "#F4A261",
+        "No Name": "#457B9D",
+        "No Name North Loop": "#4A7B8B",
+        "South Connector": "#E76F51",
+        "South End": "#264653",
+        "Switch Board": "#FFB703",
+      };
+
+      map.on("load", () => {
+        fetch("data/braddocks-trail-trails.geojson")
+          .then((response) => response.json())
+          .then((data) => {
+            map.addSource("trails", {
+              type: "geojson",
+              data: data,
+            });
+
+            map.addLayer({
+              id: "trails-layer",
+              type: "line",
+              source: "trails",
+              layout: {
+                "line-join": "round",
+                "line-cap": "round",
+              },
+              paint: {
+                "line-color": [
+                  "match",
+                  ["get", "Name"],
+                  "Christmas",
+                  trailColors["Christmas"],
+                  "Eagle #1",
+                  trailColors["Eagle #1"],
+                  "Forest",
+                  trailColors["Forest"],
+                  "Look Out",
+                  trailColors["Look Out"],
+                  "Look Out East",
+                  trailColors["Look Out East"],
+                  "No Name",
+                  trailColors["No Name"],
+                  "No Name North Loop",
+                  trailColors["No Name North Loop"],
+                  "South Connector",
+                  trailColors["South Connector"],
+                  "South End",
+                  trailColors["South End"],
+                  "Switch Board",
+                  trailColors["Switch Board"],
+                  "#666666", // default color
+                ],
+                "line-width": 3,
+                "line-opacity": 0.85,
+              },
+            });
+
+            map.addLayer({
+              id: "trail-labels",
+              type: "symbol",
+              source: "trails",
+              layout: {
+                "text-field": ["get", "Name"],
+                "text-size": 12,
+                "symbol-placement": "line",
+                "text-offset": [0, -1],
+                "text-anchor": "center",
+                "text-allow-overlap": false,
+                "text-ignore-placement": false,
+                "text-max-angle": 30,
+                "text-letter-spacing": 0.1,
+                "text-padding": 10,
+                "symbol-spacing": 400,
+                "text-keep-upright": true,
+              },
+              paint: {
+                "text-color": "#000000",
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 2,
+                "text-halo-blur": 1,
+              },
+            });
+          });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trolley Line - Friends of Norwin Trails</title>
+    <meta
+      name="description"
+      content="GIS data and trail information for the Trolley Line by Friends of Norwin Trails"
+    />
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        font-family: "Open Sans", sans-serif;
+      }
+
+      .map-container {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      .about-panel {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        font-size: 13px;
+      }
+
+      .about-panel h3 {
+        margin: 0 0 8px 0;
+        color: #002855;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .about-panel h3 .material-icons {
+        font-size: 16px;
+      }
+
+      .about-toggle {
+        display: none;
+        width: 100%;
+        padding: 6px 0;
+        background: none;
+        border: none;
+        text-align: left;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Open Sans", sans-serif;
+        color: #002855;
+        cursor: pointer;
+      }
+
+      .about-toggle .material-icons {
+        font-size: 18px;
+        float: right;
+        transition: transform 0.3s ease;
+      }
+
+      .about-toggle.collapsed .material-icons {
+        transform: rotate(-90deg);
+      }
+
+      .about-content {
+        transition: max-height 0.3s ease-out;
+        overflow: hidden;
+        line-height: 1.5;
+      }
+
+      /* Mobile responsive styles */
+      @media screen and (max-width: 768px) {
+        .about-panel {
+          left: 10px;
+          right: 10px;
+          bottom: 10px;
+          max-width: none;
+          padding: 10px 15px;
+        }
+
+        .about-toggle {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .about-panel h3 {
+          display: none;
+        }
+
+        .about-content {
+          max-height: 0;
+          margin-top: 0;
+        }
+
+        .about-content.expanded {
+          max-height: 300px;
+          margin-top: 10px;
+        }
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 8px 0;
+        gap: 8px;
+      }
+
+      .legend-swatch {
+        width: 24px;
+        height: 16px;
+        border: 1px solid #444;
+        border-radius: 2px;
+      }
+
+      .legend-trail {
+        width: 24px;
+        height: 3px;
+        background: #8b00ff;
+        position: relative;
+      }
+
+      .legend-trail::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: linear-gradient(90deg, #8b00ff 50%, transparent 50%);
+        background-size: 4px 100%;
+      }
+
+      .legend-label {
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+    <div class="about-panel">
+      <h3><span class="material-icons">info</span>About</h3>
+      <button class="about-toggle collapsed">
+        <span>About</span>
+        <span class="material-icons">expand_more</span>
+      </button>
+      <div class="about-content">
+        <p>
+          The Trolley Line project aims to establish a recreational trails along
+          the West Penn Railways trolley route between Larimer and Irwin.
+          <br /><br />
+          In addition to creating a shared-use path along the trolley route,
+          this project proposes to acquire the private land adjacent to Hilltop
+          Park and expand the parks trail system.
+        </p>
+        <div style="margin-top: 16px">
+          <strong style="font-size: 13px">Legend</strong>
+          <div class="legend-item">
+            <div
+              class="legend-swatch"
+              style="
+                background: rgba(144, 238, 144, 0.2);
+                border-color: #2e8b57;
+              "
+            ></div>
+            <span class="legend-label">Public Property</span>
+          </div>
+          <div class="legend-item">
+            <div
+              class="legend-swatch"
+              style="
+                background: rgba(255, 223, 150, 0.4);
+                border-color: #b8860b;
+              "
+            ></div>
+            <span class="legend-label">Private Property</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-trail"></div>
+            <span class="legend-label">Proposed Trail</span>
+          </div>
+        </div>
+        <p style="margin-top: 16px; font-size: 11px">
+          Data collected by
+          <a href="https://norwintrails.org">Friends of Norwin Trails</a>, a
+          501(c)(3) organization committed to establishing safe and accessible
+          recreational trails in the Norwin area.
+        </p>
+      </div>
+    </div>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
+    <script>
+      // Add toggle functionality for mobile
+      document
+        .querySelector(".about-toggle")
+        .addEventListener("click", function () {
+          this.classList.toggle("collapsed");
+          document.querySelector(".about-content").classList.toggle("expanded");
+        });
+
+      // Load the Mapbox token based on environment
+      const MAPBOX_TOKEN = (() => {
+        // Check if a development token is available in localStorage
+        const devToken = localStorage.getItem("mapbox_dev_token");
+        if (devToken) return devToken;
+
+        // Fall back to production token if no dev token is set
+        return "pk.eyJ1IjoiZG5hayIsImEiOiJjbTViY3dtamQycTQ0Mm1wcTZxd3ltNG82In0.XfOFWaiX-Usb8PUqD6lSFQ";
+      })();
+
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+
+      const map = new mapboxgl.Map({
+        container: "map",
+        style: "mapbox://styles/dnak/cm3ua6jw3000801qrfm6f1rqn",
+        center: [-79.720268, 40.335236], // This should be updated with Trolley Line coordinates
+        zoom: 15,
+      });
+
+      map.on("load", () => {
+        // Load parcels data first
+        fetch("data/trolley-line-parcels.geojson")
+          .then((response) => response.json())
+          .then((data) => {
+            map.addSource("parcels", {
+              type: "geojson",
+              data: data,
+            });
+
+            map.addLayer({
+              id: "parcels-layer",
+              type: "fill",
+              source: "parcels",
+              paint: {
+                "fill-color": [
+                  "match",
+                  ["get", "type"],
+                  "public",
+                  "rgba(144, 238, 144, 0.2)", // Light green
+                  "right of way",
+                  "rgba(144, 238, 144, 0.4)", // Light green
+                  "private",
+                  "rgba(255, 223, 150, 0.4)", // Warmer, more visible yellow
+                  "#666666", // default color
+                ],
+                "fill-outline-color": [
+                  "match",
+                  ["get", "type"],
+                  "public",
+                  "#2E8B57", // Dark green outline
+                  "right of way",
+                  "#2E8B57", // Dark green outline
+                  "private",
+                  "#B8860B", // Dark golden outline
+                  "#444444", // default outline
+                ],
+              },
+            });
+
+            map.addLayer({
+              id: "parcels-outline",
+              type: "line",
+              source: "parcels",
+              paint: {
+                "line-color": [
+                  "match",
+                  ["get", "type"],
+                  "public",
+                  "#2E8B57",
+                  "right of way",
+                  "#2E8B57",
+                  "private",
+                  "#B8860B",
+                  "#444444",
+                ],
+                "line-width": 1.5,
+              },
+            });
+
+            map.addLayer({
+              id: "parcels-labels",
+              type: "symbol",
+              source: "parcels",
+              layout: {
+                "text-field": ["get", "name"],
+                "text-size": 12,
+                "text-anchor": "center",
+                "text-allow-overlap": false,
+                "text-ignore-placement": false,
+                "text-letter-spacing": 0.1,
+                "text-padding": 10,
+                "text-keep-upright": true,
+              },
+              paint: {
+                "text-color": "#000000",
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 2,
+                "text-halo-blur": 1,
+              },
+            });
+
+            // Load trails data after parcels to ensure it appears on top
+            fetch("data/trolley-line-trails.geojson")
+              .then((response) => response.json())
+              .then((data) => {
+                map.addSource("trails", {
+                  type: "geojson",
+                  data: data,
+                });
+
+                // Add a casing/outline layer for bridges
+                map.addLayer({
+                  id: "trails-bridge-casing",
+                  type: "line",
+                  source: "trails",
+                  filter: ["==", ["get", "is-bridge"], true],
+                  paint: {
+                    "line-color": "#FF69B4",
+                    "line-width": [
+                      "interpolate",
+                      ["linear"],
+                      ["zoom"],
+                      12,
+                      6, // At zoom level 12, width is 6px
+                      14,
+                      8, // At zoom level 14, width is 8px
+                      16,
+                      12, // At zoom level 16, width is 12px
+                      18,
+                      16, // At zoom level 18, width is 16px
+                    ],
+                    "line-opacity": 0.5,
+                  },
+                  layout: {
+                    "line-cap": "round",
+                    "line-join": "round",
+                  },
+                });
+
+                map.addLayer({
+                  id: "trails-layer",
+                  type: "line",
+                  source: "trails",
+                  paint: {
+                    "line-color": "#8B00FF",
+                    "line-width": 3,
+                    "line-opacity": 0.8,
+                    "line-dasharray": [2, 2],
+                  },
+                  layout: {
+                    "line-cap": "round",
+                    "line-join": "round",
+                  },
+                });
+              });
+          });
+      });
+    </script>
+  </body>
+</html>

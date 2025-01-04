@@ -3,21 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Braddock's Trail Park - Friends of Norwin Trails</title>
+    <title>Friends of Norwin Trails - Trail Maps</title>
     <meta
       name="description"
-      content="GIS data and trail information for Braddock's Trail Park by Friends of Norwin Trails"
-    />
-    <link
-      href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css"
-      rel="stylesheet"
+      content="Interactive trail maps by Friends of Norwin Trails"
     />
     <link
       href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
     <style>
@@ -28,350 +20,124 @@
         height: 100%;
         width: 100%;
         font-family: "Open Sans", sans-serif;
+        background: #f5f5f5;
       }
 
-      /* Style the GitHub Pages title */
-      .markdown-body h1:first-child {
-        font-size: 2.5em !important;
-        color: #002855 !important;
-        font-weight: 600 !important;
-        padding: 20px 0 !important;
-        margin: 0 30px 20px !important;
-        border-bottom: 3px solid #eaaa00 !important;
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
       }
 
-      /* Style links */
-      .markdown-body a {
-        color: #002855 !important;
-        text-decoration: underline !important;
-      }
-
-      .markdown-body h1:first-child a {
-        text-decoration: none !important;
-      }
-
-      .markdown-body a:hover {
-        color: #eaaa00 !important;
-      }
-
-      .map-container {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-      }
-
-      .trail-selector {
-        position: absolute;
-        top: 20px;
-        left: 20px;
-        z-index: 1;
-        background: white;
-        padding: 8px;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-
-      .trail-selector select {
-        padding: 6px 10px;
-        font-family: "Open Sans", sans-serif;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background: white;
+      h1 {
         color: #002855;
-        cursor: pointer;
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2.5em;
+        border-bottom: 3px solid #eaaa00;
+        padding-bottom: 10px;
       }
 
-      #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
+      .trail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
       }
 
-      .about-panel {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        max-width: 400px;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 15px 20px;
+      .trail-card {
+        background: white;
         border-radius: 8px;
+        padding: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        z-index: 1;
-        font-size: 13px;
+        transition: transform 0.2s ease;
       }
 
-      .about-panel h3 {
-        margin: 0 0 8px 0;
+      .trail-card:hover {
+        transform: translateY(-2px);
+      }
+
+      .trail-card h2 {
         color: #002855;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-family: "Open Sans", sans-serif;
-        font-weight: 600;
-        font-size: 14px;
+        margin: 0 0 10px 0;
       }
 
-      .about-panel h3 .material-icons {
-        font-size: 16px;
-      }
-
-      .about-toggle {
-        display: none;
-        width: 100%;
-        padding: 6px 0;
-        background: none;
-        border: none;
-        text-align: left;
-        font-size: 14px;
-        font-weight: 600;
-        font-family: "Open Sans", sans-serif;
-        color: #002855;
-        cursor: pointer;
-      }
-
-      .about-toggle .material-icons {
-        font-size: 18px;
-        float: right;
-        transition: transform 0.3s ease;
-      }
-
-      .about-toggle.collapsed .material-icons {
-        transform: rotate(-90deg);
-      }
-
-      .about-content {
-        transition: max-height 0.3s ease-out;
-        overflow: hidden;
+      .trail-card p {
+        color: #666;
+        margin: 0 0 20px 0;
         line-height: 1.5;
       }
 
-      /* Mobile responsive styles */
-      @media screen and (max-width: 768px) {
-        .about-panel {
-          left: 10px;
-          right: 10px;
-          bottom: 10px;
-          max-width: none;
-          padding: 10px 15px;
+      .trail-card a {
+        display: inline-block;
+        background: #002855;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        transition: background 0.2s ease;
+      }
+
+      .trail-card a:hover {
+        background: #eaaa00;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        color: #666;
+      }
+
+      .footer a {
+        color: #002855;
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px;
         }
 
-        .about-toggle {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-
-        .about-panel h3 {
-          display: none;
-        }
-
-        .about-content {
-          max-height: 0;
-          margin-top: 0;
-        }
-
-        .about-content.expanded {
-          max-height: 300px;
-          margin-top: 10px;
+        h1 {
+          font-size: 2em;
         }
       }
     </style>
   </head>
   <body>
-    <div class="map-container">
-      <div class="trail-selector">
-        <select id="trail-select">
-          <option value="braddocks-trail">Braddock's Trail</option>
-          <option value="trolley-line">Trolley Line</option>
-        </select>
-      </div>
-      <div id="map"></div>
-    </div>
+    <div class="container">
+      <h1>Friends of Norwin Trails Maps</h1>
 
-    <div class="about-panel">
-      <h3><span class="material-icons">info</span>About</h3>
-      <button class="about-toggle collapsed">
-        <span>About</span>
-        <span class="material-icons">expand_more</span>
-      </button>
-      <div class="about-content">
+      <div class="trail-grid">
+        <div class="trail-card">
+          <h2>Braddock's Trail</h2>
+          <p>Explore the walking and biking trails at Braddock's Trail Park.</p>
+          <a href="braddocks-trail.html">View Map</a>
+        </div>
+
+        <div class="trail-card">
+          <h2>Trolley Line</h2>
+          <p>
+            Proposed trail between Irwin and Larimer with expanded multi-use
+            trails in Hilltop Park.
+          </p>
+          <a href="trolley-line.html">View Map</a>
+        </div>
+      </div>
+
+      <div class="footer">
         <p>
-          The
-          <a href="https://github.com/norwin-trails/braddocks-trail"
-            >norwin-trails/braddocks-trail</a
-          >
-          repository stores GIS data for Braddock's Trail Park.
-          <br />
-          <br />
-          Data was collected by
+          Data collected by
           <a href="https://norwintrails.org">Friends of Norwin Trails</a>, a
           501(c)(3) organization committed to establishing safe and accessible
           recreational bicycling and walking opportunities in the Norwin area.
         </p>
       </div>
     </div>
-
-    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
-    <script>
-      // Add toggle functionality for mobile
-      document
-        .querySelector(".about-toggle")
-        .addEventListener("click", function () {
-          this.classList.toggle("collapsed");
-          document.querySelector(".about-content").classList.toggle("expanded");
-        });
-
-      // Load the Mapbox token based on environment
-      const MAPBOX_TOKEN = (() => {
-        // Check if a development token is available in localStorage
-        const devToken = localStorage.getItem("mapbox_dev_token");
-        if (devToken) return devToken;
-
-        // Fall back to production token if no dev token is set
-        return "pk.eyJ1IjoiZG5hayIsImEiOiJjbTViY3dtamQycTQ0Mm1wcTZxd3ltNG82In0.XfOFWaiX-Usb8PUqD6lSFQ"; // Replace this with your production token
-      })();
-
-      // For development: You can set your dev token in the browser console with:
-      // localStorage.setItem('mapbox_dev_token', 'your-dev-token-here')
-
-      mapboxgl.accessToken = MAPBOX_TOKEN;
-
-      const map = new mapboxgl.Map({
-        container: "map",
-        //style: "mapbox://styles/mapbox/outdoors-v12", // You can replace this with your custom style URL
-        style: "mapbox://styles/dnak/cm3ua6jw3000801qrfm6f1rqn",
-        center: [-79.774776, 40.302799],
-        zoom: 16,
-      });
-
-      // Define trail colors
-      const trailColors = {
-        Christmas: "#E63946",
-        "Eagle #1": "#1D3557",
-        Forest: "#2A9D8F",
-        "Look Out": "#E9C46A",
-        "Look Out East": "#F4A261",
-        "No Name": "#457B9D",
-        "No Name North Loop": "#4A7B8B",
-        "South Connector": "#E76F51",
-        "South End": "#264653",
-        "Switch Board": "#FFB703",
-      };
-
-      map.on("load", () => {
-        // Function to load trail data
-        const loadTrailData = (trailId) => {
-          // Remove existing layers if they exist
-          if (map.getLayer("trails-layer")) map.removeLayer("trails-layer");
-          if (map.getLayer("trail-labels")) map.removeLayer("trail-labels");
-          if (map.getSource("trails")) map.removeSource("trails");
-
-          // Set map center based on selected trail
-          const trailCenters = {
-            "braddocks-trail": [-79.774776, 40.302799],
-            "trolley-line": [-79.774776, 40.302799], // Update this with actual coordinates
-          };
-
-          map.flyTo({
-            center: trailCenters[trailId],
-            zoom: 16,
-          });
-
-          // Load the appropriate GeoJSON file
-          const filename =
-            trailId === "braddocks-trail"
-              ? "braddocks-trail-trails.geojson"
-              : "trolley-line.geojson";
-
-          fetch(`data/${filename}`)
-            .then((response) => response.json())
-            .then((data) => {
-              map.addSource("trails", {
-                type: "geojson",
-                data: data,
-              });
-
-              map.addLayer({
-                id: "trails-layer",
-                type: "line",
-                source: "trails",
-                layout: {
-                  "line-join": "round",
-                  "line-cap": "round",
-                },
-                paint: {
-                  "line-color": [
-                    "match",
-                    ["get", "Name"],
-                    "Christmas",
-                    trailColors["Christmas"],
-                    "Eagle #1",
-                    trailColors["Eagle #1"],
-                    "Forest",
-                    trailColors["Forest"],
-                    "Look Out",
-                    trailColors["Look Out"],
-                    "Look Out East",
-                    trailColors["Look Out East"],
-                    "No Name",
-                    trailColors["No Name"],
-                    "No Name North Loop",
-                    trailColors["No Name North Loop"],
-                    "South Connector",
-                    trailColors["South Connector"],
-                    "South End",
-                    trailColors["South End"],
-                    "Switch Board",
-                    trailColors["Switch Board"],
-                    "#666666", // default color
-                  ],
-                  "line-width": 3,
-                  "line-opacity": 0.85,
-                },
-              });
-
-              map.addLayer({
-                id: "trail-labels",
-                type: "symbol",
-                source: "trails",
-                layout: {
-                  "text-field": ["get", "Name"],
-                  "text-size": 12,
-                  "symbol-placement": "line",
-                  "text-offset": [0, -1],
-                  "text-anchor": "center",
-                  "text-allow-overlap": false,
-                  "text-ignore-placement": false,
-                  "text-max-angle": 30,
-                  "text-letter-spacing": 0.1,
-                  "text-padding": 10,
-                  "symbol-spacing": 400,
-                  "text-keep-upright": true,
-                },
-                paint: {
-                  "text-color": "#000000",
-                  "text-halo-color": "#ffffff",
-                  "text-halo-width": 2,
-                  "text-halo-blur": 1,
-                },
-              });
-            });
-        };
-
-        // Load initial trail data
-        loadTrailData("braddocks-trail");
-
-        // Add event listener for trail selection
-        document
-          .getElementById("trail-select")
-          .addEventListener("change", (e) => {
-            loadTrailData(e.target.value);
-          });
-      });
-    </script>
   </body>
 </html>
