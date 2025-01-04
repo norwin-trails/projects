@@ -11,7 +11,7 @@
       "properties": {
         "id": "3",
         "name": "Private Landowner",
-        "description": "Wooded parcel situated between Hilltop Park and the West Penn Power property. This property would be acquired in order to expand the park's trail system and provide easy access between the Trolley Line and Hilltop Park.",
+        "description": "Wooded parcel situated between Hilltop Park and the West Penn Power property.<br/><br/>This property would be acquired in order to expand the park's trail system and provide easy access between the Trolley Line and Hilltop Park.",
         "type": "private"
       },
       "geometry": {
@@ -72,7 +72,7 @@
       "properties": {
         "id": "2",
         "name": "Hilltop Park",
-        "description": "Hilltop Park is a primarily wooded area featuring several trails, though they currently require maintenance. Plans include expanding and enhancing the trails to ensure they are sustainable and suitable for both hiking and mountain biking.",
+        "description": "Hilltop Park is a primarily wooded area featuring several trails, though they currently require maintenance. <br/><br/>Plans include expanding and enhancing the trails to ensure they are sustainable and suitable for both hiking and mountain biking.",
         "type": "public"
       },
       "geometry": {
@@ -223,7 +223,7 @@
       "properties": {
         "id": "1",
         "name": "West Penn Power",
-        "description": "The West Penn Railways trolley formerly operated on this parcel. The parcel is owned by West Penn Power and includes a substation and power lines. West Penn Power would be approached to grant a recreational easement.",
+        "description": "The West Penn Railways trolley formerly operated on this parcel. This is an irregularly shaped parcel with a long, narrow strip of land extending towards Irwin.  <br/><br/>The parcel is owned by West Penn Power and includes a substation and power lines. West Penn Power would be approached to grant a recreational easement. ",
         "type": "private"
       },
       "geometry": {

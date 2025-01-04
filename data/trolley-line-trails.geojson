@@ -15,7 +15,7 @@
         "segment": null,
         "option": 1,
         "is-bridge": true,
-        "description": "The trolley line entered Irwin on a bridge over Tinkers Run in this area. A pedestrian bridge could be reconstructed here. This would provide a scenic and accessible entrance to downtown Irwin."
+        "description": "The trolley line entered Irwin on a bridge over Tinkers Run in this area.<br><br>A pedestrian bridge could be reconstructed here. This would provide a scenic and accessible entrance to downtown Irwin."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -36,7 +36,7 @@
         "segment": null,
         "option": 1,
         "is-bridge": false,
-        "description": "The main Trolley Line trail would follow the former West Penn Railways trolley line route."
+        "description": "The main Trolley Line trail would follow the former West Penn Railways trolley line route. This trail would be about 1.3 miles long."
       },
       "geometry": {
         "type": "MultiLineString",
@@ -93,7 +93,7 @@
         "segment": null,
         "option": 1,
         "is-bridge": false,
-        "description": "On-street alternate route to carry bikers between the trail and Irwin. This would be the primary route until the 4th Street pedestrian bridge is proven to be feasible and constructed."
+        "description": "On-street alternate route to carry bikers between the trail and Irwin.<br><br>This would be the primary route until the 4th Street pedestrian bridge is proven to be feasible and constructed."
       },
       "geometry": {
         "type": "MultiLineString",

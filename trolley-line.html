@@ -486,7 +486,7 @@
                 activeMarker = marker;
 
                 // Show info panel
-                parcelDescription.textContent = feature
+                parcelDescription.innerHTML = feature
                   ? feature.properties.description || "No description available"
                   : "No description available";
                 infoPanel.classList.add("visible");
@@ -629,7 +629,7 @@
                     activeMarker = marker;
 
                     // Show info panel
-                    parcelDescription.textContent = feature
+                    parcelDescription.innerHTML = feature
                       ? feature.properties.description ||
                         "No description available"
                       : "No description available";
