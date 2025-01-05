@@ -15,7 +15,8 @@
         "segment": null,
         "option": 1,
         "is-bridge": true,
-        "description": "The trolley line entered Irwin on a bridge over Tinkers Run in this area.<br><br>A pedestrian bridge could be reconstructed here. This would provide a scenic and accessible entrance to downtown Irwin."
+        "description": "The trolley line entered Irwin on a bridge over Tinkers Run in this area.<br><br>A pedestrian bridge could be reconstructed here. This would provide a scenic and accessible pedestrianentrance to downtown Irwin. Hilltop Park would be 0.5 miles from downtown Irwin.",
+        "marker": [-79.7122902, 40.3323461]
       },
       "geometry": {
         "type": "MultiLineString",
@@ -36,7 +37,8 @@
         "segment": null,
         "option": 1,
         "is-bridge": false,
-        "description": "The main Trolley Line trail would follow the former West Penn Railways trolley line route. This trail would be about 1.3 miles long."
+        "description": "The main Trolley Line trail would be a shared-use path following the former West Penn Railways trolley line route. <br><br>This trail would be about 1.3 miles long. The surface sould likely be crushed stone.",
+        "marker": [-79.72193022, 40.33686825]
       },
       "geometry": {
         "type": "MultiLineString",
@@ -93,7 +95,8 @@
         "segment": null,
         "option": 1,
         "is-bridge": false,
-        "description": "On-street alternate route to carry bikers between the trail and Irwin.<br><br>This would be the primary route until the 4th Street pedestrian bridge is proven to be feasible and constructed."
+        "description": "On-street alternate route to carry bikers between the trail and Irwin.<br><br>This would be the primary route until the 4th Street pedestrian bridge is proven to be feasible and constructed.",
+        "marker": [-79.7124248, 40.3337883]
       },
       "geometry": {
         "type": "MultiLineString",

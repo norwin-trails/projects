@@ -70,8 +70,9 @@
         font-size: 14px;
       }
 
-      .about-panel h3 .material-icons {
-        font-size: 16px;
+      .about-panel h3 img {
+        height: 24px;
+        width: auto;
       }
 
       .about-toggle {
@@ -88,9 +89,15 @@
         cursor: pointer;
       }
 
+      .about-toggle img {
+        height: 24px;
+        width: auto;
+        margin-right: 8px;
+      }
+
       .about-toggle .material-icons {
-        font-size: 18px;
-        float: right;
+        font-size: 24px;
+        margin-right: -8px;
         transition: transform 0.3s ease;
       }
 
@@ -112,12 +119,20 @@
           bottom: 10px;
           max-width: none;
           padding: 10px 15px;
+          max-height: 50vh;
+          overflow-y: auto;
         }
 
         .about-toggle {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          position: sticky;
+          top: 0;
+          background: rgba(255, 255, 255, 0.9);
+          margin: -10px -15px 10px -15px;
+          padding: 10px 15px;
+          z-index: 1;
         }
 
         .about-panel h3 {
@@ -127,10 +142,12 @@
         .about-content {
           max-height: 0;
           margin-top: 0;
+          overflow: hidden;
         }
 
         .about-content.expanded {
-          max-height: 300px;
+          max-height: calc(50vh - 60px); /* Account for header height */
+          overflow-y: visible;
           margin-top: 10px;
         }
       }
@@ -266,9 +283,11 @@
     </div>
 
     <div class="about-panel">
-      <h3><span class="material-icons">info</span>About</h3>
+      <h3>
+        Trolley Line Trail / Hilltop Park
+      </h3>
       <button class="about-toggle collapsed">
-        <span>About</span>
+        <span>Trolley Line Trail / Hilltop Park</span>
         <span class="material-icons">expand_more</span>
       </button>
       <div class="about-content">
@@ -312,11 +331,8 @@
             <span class="legend-label">Proposed Trail</span>
           </div>
         </div>
-        <p style="margin-top: 16px; font-size: 11px">
-          Data collected by
-          <a href="https://norwintrails.org">Friends of Norwin Trails</a>, a
-          501(c)(3) organization committed to establishing safe and accessible
-          recreational trails in the Norwin area.
+        <p style="margin-top: 16px; font-size: 11px"">
+          See other projects by <a href="..">Friends of Norwin Trails</a>
         </p>
       </div>
     </div>
@@ -353,8 +369,8 @@
       });
 
       map.on("load", () => {
-        // Load parcels data first
-        fetch("data/trolley-line-parcels.geojson")
+        // Update path to parcels data
+        fetch("../data/trolley-line-parcels.geojson")
           .then((response) => response.json())
           .then((data) => {
             map.addSource("parcels", {
@@ -533,8 +549,8 @@
               }
             });
 
-            // Load trails data after parcels to ensure it appears on top
-            fetch("data/trolley-line-trails.geojson")
+            // Update path to trails data
+            fetch("../data/trolley-line-trails.geojson")
               .then((response) => response.json())
               .then((data) => {
                 map.addSource("trails", {
@@ -588,53 +604,32 @@
                 });
 
                 // Define info marker locations for trails
-                const trailInfoMarkers = [
-                  {
-                    coordinates: [-79.7122902, 40.3323461],
-                    featureId: 6, // Example ID - replace with actual
-                  },
-                  {
-                    coordinates: [-79.7124248, 40.3337883],
-                    featureId: 52, // ID for on-street alternate route
-                  },
-                  {
-                    coordinates: [-79.72193022, 40.33686825],
-                    featureId: 10, // ID for main Trolley Line trail
-                  },
-                ];
+                // Create markers for features that have marker coordinates
+                data.features.forEach((feature) => {
+                  if (feature.properties.marker) {
+                    const el = document.createElement('div');
+                    el.className = 'marker';
+                    el.innerHTML = '<span class="material-icons">info</span>';
 
-                // Create markers for trail points
-                trailInfoMarkers.forEach((markerConfig) => {
-                  const el = document.createElement("div");
-                  el.className = "marker";
-                  el.innerHTML = '<span class="material-icons">info</span>';
+                    const marker = new mapboxgl.Marker(el)
+                      .setLngLat(feature.properties.marker)
+                      .addTo(map);
 
-                  const marker = new mapboxgl.Marker(el)
-                    .setLngLat(markerConfig.coordinates)
-                    .addTo(map);
+                    el.addEventListener('click', () => {
+                      // Deselect previous marker if exists
+                      if (activeMarker) {
+                        activeMarker.getElement().classList.remove('active');
+                      }
 
-                  el.addEventListener("click", () => {
-                    // Find the trail feature by ID
-                    const feature = data.features.find(
-                      (f) => f.properties.id === markerConfig.featureId
-                    );
+                      // Select new marker
+                      el.classList.add('active');
+                      activeMarker = marker;
 
-                    // Deselect previous marker if exists
-                    if (activeMarker) {
-                      activeMarker.getElement().classList.remove("active");
-                    }
-
-                    // Select new marker
-                    el.classList.add("active");
-                    activeMarker = marker;
-
-                    // Show info panel
-                    parcelDescription.innerHTML = feature
-                      ? feature.properties.description ||
-                        "No description available"
-                      : "No description available";
-                    infoPanel.classList.add("visible");
-                  });
+                      // Show info panel
+                      parcelDescription.innerHTML = feature.properties.description || 'No description available';
+                      infoPanel.classList.add('visible');
+                    });
+                  }
                 });
               });
           });

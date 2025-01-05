@@ -93,8 +93,9 @@
         font-size: 14px;
       }
 
-      .about-panel h3 .material-icons {
-        font-size: 16px;
+      .about-panel h3 img {
+        height: 24px;
+        width: auto;
       }
 
       .about-toggle {
@@ -109,6 +110,12 @@
         font-family: "Open Sans", sans-serif;
         color: #002855;
         cursor: pointer;
+      }
+
+      .about-toggle img {
+        height: 24px;
+        width: auto;
+        margin-right: 8px;
       }
 
       .about-toggle .material-icons {
@@ -165,24 +172,21 @@
     </div>
 
     <div class="about-panel">
-      <h3><span class="material-icons">info</span>About</h3>
+      <h3>
+        Braddock's Trail Park Trails
+      </h3>
       <button class="about-toggle collapsed">
-        <span>About</span>
+        <span>Braddock's Trail Park Trails</span>
         <span class="material-icons">expand_more</span>
       </button>
       <div class="about-content">
         <p>
-          The
-          <a href="https://github.com/norwin-trails/braddocks-trail"
-            >norwin-trails/braddocks-trail</a
-          >
-          repository stores GIS data for Braddock's Trail Park.
-          <br />
-          <br />
-          Data was collected by
-          <a href="https://norwintrails.org">Friends of Norwin Trails</a>, a
-          501(c)(3) organization committed to establishing safe and accessible
-          recreational bicycling and walking opportunities in the Norwin area.
+          In cooperation with the North Huntingdon Township, Friends of Norwin
+          Trails provides volunteer maintenance for the hiking and biking trails throughout 
+          the park. 
+        </p>
+        <p style="margin-top: 16px; font-size: 11px"">
+          See other projects by <a href="..">Friends of Norwin Trails</a>
         </p>
       </div>
     </div>
@@ -235,7 +239,7 @@
       };
 
       map.on("load", () => {
-        fetch("data/braddocks-trail-trails.geojson")
+        fetch("../data/braddocks-trail-trails.geojson")
           .then((response) => response.json())
           .then((data) => {
             map.addSource("trails", {
