@@ -451,62 +451,38 @@
             });
 
             // Define info marker locations and their associated feature IDs
-            const infoMarkers = [
-              {
-                coordinates: [-79.720546, 40.333336], // Example coordinates - replace with actual
-                featureId: "2", // Example ID - replace with actual
-              },
-              {
-                coordinates: [-79.723151, 40.338283],
-                featureId: "1",
-              },
-              {
-                coordinates: [-79.720221, 40.334322],
-                featureId: "3",
-              },
-              {
-                coordinates: [-79.72592, 40.340738],
-                featureId: "4",
-              },
-            ];
-
-            // Create markers for each defined point
             let activeMarker = null;
             const infoPanel = document.querySelector(".info-panel");
             const parcelDescription =
               document.getElementById("parcel-description");
             const closeButton = document.querySelector(".close-button");
 
-            infoMarkers.forEach((markerConfig) => {
-              const el = document.createElement("div");
-              el.className = "marker";
-              el.innerHTML = '<span class="material-icons">info</span>';
+            // Create markers for features that have marker coordinates
+            data.features.forEach((feature) => {
+              if (feature.properties.marker) {
+                const el = document.createElement('div');
+                el.className = 'marker';
+                el.innerHTML = '<span class="material-icons">info</span>';
 
-              const marker = new mapboxgl.Marker(el)
-                .setLngLat(markerConfig.coordinates)
-                .addTo(map);
+                const marker = new mapboxgl.Marker(el)
+                  .setLngLat(feature.properties.marker)
+                  .addTo(map);
 
-              el.addEventListener("click", () => {
-                // Find the feature by ID
-                const feature = data.features.find(
-                  (f) => f.properties.id === markerConfig.featureId
-                );
+                el.addEventListener('click', () => {
+                  // Deselect previous marker if exists
+                  if (activeMarker) {
+                    activeMarker.getElement().classList.remove('active');
+                  }
 
-                // Deselect previous marker if exists
-                if (activeMarker) {
-                  activeMarker.getElement().classList.remove("active");
-                }
+                  // Select new marker
+                  el.classList.add('active');
+                  activeMarker = marker;
 
-                // Select new marker
-                el.classList.add("active");
-                activeMarker = marker;
-
-                // Show info panel
-                parcelDescription.innerHTML = feature
-                  ? feature.properties.description || "No description available"
-                  : "No description available";
-                infoPanel.classList.add("visible");
-              });
+                  // Show info panel
+                  parcelDescription.innerHTML = feature.properties.description || 'No description available';
+                  infoPanel.classList.add('visible');
+                });
+              }
             });
 
             // Add styles for the markers
