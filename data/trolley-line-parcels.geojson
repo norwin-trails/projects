@@ -11,7 +11,7 @@
       "properties": {
         "id": "3",
         "name": "Private Landowner",
-        "description": "Wooded parcel situated between Hilltop Park and the West Penn Power property.<br/><br/>This property would be acquired in order to expand the park's trail system and provide easy access between the Trolley Line and Hilltop Park.",
+        "description": "This privately owned wooded parcel is situated between Hilltop Park and the West Penn Power property.<br/><br/>This property would be acquired in order to expand the park's trail system and provide easy access between the Trolley Line and Hilltop Park.",
         "type": "private",
         "marker": [-79.720221, 40.334322]
       },
@@ -225,7 +225,7 @@
       "properties": {
         "id": "1",
         "name": "West Penn Power",
-        "description": "The West Penn Railways trolley formerly operated on this parcel. This is an irregularly shaped parcel with a long, narrow strip of land extending towards Irwin.  <br/><br/>The parcel is owned by West Penn Power and includes a substation and power lines. West Penn Power would be approached to grant a recreational easement. ",
+        "description": "Most of the proposed trail sits on this parcel, once part of the West Penn Railways trolley line. The irregularly shaped parcel extends toward Irwin along the path of the trolley line.<br/><br/>Owned by West Penn Power, it includes a substation and power lines. A recreational easement would be requested from West Penn Power.",
         "type": "private",
         "marker": [-79.723151, 40.338283]
       },

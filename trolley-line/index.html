@@ -70,6 +70,29 @@
         font-size: 14px;
       }
 
+      .about-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      #start-tour {
+        padding: 8px 16px;
+        background: #002855;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: "Open Sans", sans-serif;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      #start-tour:hover {
+        background: #003875;
+      }
+
       .about-panel h3 img {
         height: 24px;
         width: auto;
@@ -215,7 +238,7 @@
         left: 20px;
         top: 20px;
         width: 400px;
-        max-height: 200px;
+        max-height: 220px;
         background: rgba(255, 255, 255, 0.9);
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -266,6 +289,124 @@
           padding: 10px 15px;
         }
       }
+
+      /* Shepherd tour customization */
+      .shepherd-element {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #002855;
+        font-family: "Open Sans", sans-serif;
+        max-width: 400px;
+        margin-top: 20px !important;
+      }
+
+      .shepherd-text {
+        color: #000;
+        font-size: 13px;
+        line-height: 1.5;
+        padding: 15px 20px;
+      }
+
+      .shepherd-header {
+        display: none;
+      }
+
+      .shepherd-footer {
+        padding: 0 20px 15px;
+        border-top: none;
+      }
+
+      /* Style the arrow to look like a line */
+      .shepherd-arrow {
+        width: 2px !important;
+        height: 20px !important;
+        margin-top: -20px;
+      }
+
+      .shepherd-arrow:before {
+        display: none;
+      }
+
+      .shepherd-arrow:after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        background: #002855;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      /* Add a dot at the end of the line */
+      .shepherd-arrow:after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: calc(100% - 4px);
+        background: #002855;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .shepherd-arrow:before {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #002855;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -2px;
+      }
+
+      .shepherd-button {
+        background: #002855;
+        border: none;
+        border-radius: 4px;
+        color: white;
+        font-family: "Open Sans", sans-serif;
+        font-size: 13px;
+        padding: 8px 16px;
+        margin: 0 0 0 8px;
+        transition: background-color 0.2s ease;
+      }
+
+      .shepherd-button:hover {
+        background: #003875;
+      }
+
+      .shepherd-button-secondary {
+        background: transparent;
+        border: 1px solid #002855;
+        color: #002855;
+      }
+
+      .shepherd-button-secondary:hover {
+        background: rgba(0, 40, 85, 0.1);
+      }
+
+      .shepherd-arrow:before {
+        background: #002855;
+      }
+
+      /* Add styles for the markers */
+      .marker {
+        cursor: pointer;
+      }
+      .marker .material-icons {
+        color: #002855;
+        font-size: 20px;
+        text-shadow: 0 0 3px white;
+      }
+      /* Fix for mapboxgl-marker positioning */
+      .mapboxgl-marker {
+        position: absolute;
+        top: 0;
+        left: 0;
+        will-change: transform;
+      }
     </style>
   </head>
   <body>
@@ -280,12 +421,21 @@
       </button>
       <h4>Information</h4>
       <p id="parcel-description"></p>
+      <div class="tour-controls" style="display: none; margin-top: 15px; text-align: right;">
+        <button class="tour-back" style="background: transparent; border: 1px solid #002855; color: #002855; padding: 8px 16px; border-radius: 4px; font-family: 'Open Sans', sans-serif; font-size: 13px; cursor: pointer;">Back</button>
+        <button class="tour-next" style="background: #002855; border: none; color: white; padding: 8px 16px; border-radius: 4px; font-family: 'Open Sans', sans-serif; font-size: 13px; margin-left: 8px; cursor: pointer;">Next</button>
+      </div>
     </div>
 
     <div class="about-panel">
-      <h3>
-        Trolley Line Trail / Hilltop Park
-      </h3>
+      <div class="about-panel-header">
+        <h3>
+          Trolley Line Trail / Hilltop Park
+        </h3>
+        <button id="start-tour">
+          Start Tour
+        </button>
+      </div>
       <button class="about-toggle collapsed">
         <span>Trolley Line Trail / Hilltop Park</span>
         <span class="material-icons">expand_more</span>
@@ -485,53 +635,200 @@
               }
             });
 
-            // Add styles for the markers
-            const style = document.createElement("style");
-            style.textContent = `
-              .marker {
-                cursor: pointer;
-                border-radius: 50%;
-                transition: all 0.2s ease;
-              }
-              .marker .material-icons {
-                color: #002855;
-                font-size: 20px;
-                text-shadow: 0 0 3px white;
-                transition: transform 0.2s ease;
-                display: block;
-              }
-              .marker:hover .material-icons {
-                transform: scale(1.2);
-              }
-              .marker.active {
-                background: rgba(0, 40, 85, 0.1);
-                padding: 8px;
-                margin: -8px;
-                box-shadow: 0 0 0 2px #002855;
-              }
-              .marker.active .material-icons {
-                transform: scale(1.2);
-                color: #002855;
-              }
-            `;
-            document.head.appendChild(style);
+            // Initialize markers array and tour state
+            const markers = [];
+            const markersByKey = new Map(); // Store markers by their layer/id key
+            const tourOrder = [
+              { layer: 'trails', id: '10' },
+              { layer: 'parcels', id: '1' },
+              { layer: 'parcels', id: '2' },
+              { layer: 'parcels', id: '3' },
+              { layer: 'trails', id: '6' },
+              { layer: 'trails', id: '52' },
+              { layer: 'parcels', id: '7' },
+              { layer: 'parcels', id: '4' }
+            ];
+            let currentTourIndex = -1;
+            let isTourActive = false;
+            const tourControls = document.querySelector('.tour-controls');
+            const backButton = document.querySelector('.tour-back');
+            const nextButton = document.querySelector('.tour-next');
 
-            // Add click handler for closing info panel
-            closeButton.addEventListener("click", () => {
-              infoPanel.classList.remove("visible");
-              if (activeMarker) {
-                activeMarker.getElement().classList.remove("active");
-                activeMarker = null;
+            // Add a source for the highlight circle
+            map.addSource('selected-marker', {
+              type: 'geojson',
+              data: {
+                type: 'FeatureCollection',
+                features: []
               }
             });
+
+            // Add circle layer for selected marker
+            map.addLayer({
+              id: 'selected-marker-circle',
+              type: 'circle',
+              source: 'selected-marker',
+              paint: {
+                'circle-radius': 18,
+                'circle-color': 'rgba(0, 40, 85, 0.1)',
+                'circle-stroke-width': 2,
+                'circle-stroke-color': '#002855'
+              }
+            });
+
+            // Function to update the selected marker highlight
+            function updateSelectedMarker(marker) {
+              if (marker) {
+                const point = {
+                  type: 'FeatureCollection',
+                  features: [{
+                    type: 'Feature',
+                    geometry: {
+                      type: 'Point',
+                      coordinates: marker.getLngLat().toArray()
+                    },
+                    properties: {}
+                  }]
+                };
+                map.getSource('selected-marker').setData(point);
+              } else {
+                // Clear the selection
+                map.getSource('selected-marker').setData({
+                  type: 'FeatureCollection',
+                  features: []
+                });
+              }
+            }
+
+            // Function to trigger marker click programmatically
+            function triggerMarkerClick(marker) {
+              // Update active marker
+              if (activeMarker !== marker) {
+                activeMarker = marker;
+                updateSelectedMarker(marker);
+              }
+              
+              const feature = marker._feature;
+              parcelDescription.innerHTML = feature.properties.description || 'No description available';
+              infoPanel.classList.add('visible');
+
+              // Show tour controls if tour is active
+              if (isTourActive) {
+                tourControls.style.display = 'block';
+                backButton.style.display = currentTourIndex > 0 ? 'inline-block' : 'none';
+                nextButton.textContent = currentTourIndex === markers.length - 1 ? 'Finish' : 'Next';
+
+                // Only zoom and center during tour mode
+                map.flyTo({
+                  center: marker.getLngLat(),
+                  zoom: 16,
+                  duration: 1000,
+                  offset: [0, -100]  // Offset to account for info panel
+                });
+              } else {
+                tourControls.style.display = 'none';
+              }
+            }
+
+            // Function to create marker
+            function createMarker(feature, layer) {
+              if (feature.properties.marker) {
+                const el = document.createElement('div');
+                el.className = 'marker';
+                el.innerHTML = '<span class="material-icons">info</span>';
+
+                const marker = new mapboxgl.Marker(el)
+                  .setLngLat(feature.properties.marker)
+                  .addTo(map);
+                
+                // Store feature data on marker for tour
+                marker._feature = feature;
+                marker._layer = layer;
+                
+                // Store marker by its layer/id key
+                const key = `${layer}:${feature.properties.id}`;
+                markersByKey.set(key, marker);
+
+                el.addEventListener('click', () => {
+                  if (!isTourActive) {
+                    triggerMarkerClick(marker);
+                  }
+                });
+              }
+            }
+
+            // Add tour start button handler
+            document.getElementById('start-tour').addEventListener('click', () => {
+              isTourActive = true;
+              // Get first marker in tour order
+              const firstStop = tourOrder[0];
+              const firstMarker = markersByKey.get(`${firstStop.layer}:${firstStop.id}`);
+              if (firstMarker) {
+                currentTourIndex = 0;
+                triggerMarkerClick(firstMarker);
+              }
+            });
+
+            // Modify tour navigation
+            function goToTourStep(index) {
+              if (index >= 0 && index < tourOrder.length) {
+                const stop = tourOrder[index];
+                const marker = markersByKey.get(`${stop.layer}:${stop.id}`);
+                if (marker) {
+                  currentTourIndex = index;
+                  triggerMarkerClick(marker);
+                }
+              }
+            }
+
+            // Modify next button handler
+            nextButton.addEventListener('click', () => {
+              if (currentTourIndex === tourOrder.length - 1) {
+                // End tour
+                isTourActive = false;
+                currentTourIndex = -1;
+                tourControls.style.display = 'none';
+                infoPanel.classList.remove('visible');
+                if (activeMarker) {
+                  activeMarker.getElement().classList.remove('active');
+                  activeMarker = null;
+                }
+              } else {
+                goToTourStep(currentTourIndex + 1);
+              }
+            });
+
+            // Add back button handler
+            backButton.addEventListener('click', () => {
+              if (currentTourIndex > 0) {
+                goToTourStep(currentTourIndex - 1);
+              }
+            });
+
+            // Add click handler for closing info panel
+            closeButton.addEventListener('click', () => {
+              infoPanel.classList.remove('visible');
+              if (activeMarker) {
+                updateSelectedMarker(null);
+                activeMarker = null;
+              }
+              if (isTourActive) {
+                isTourActive = false;
+                currentTourIndex = -1;
+                tourControls.style.display = 'none';
+              }
+            });
+
+            // Create markers for parcels that have marker coordinates
+            data.features.forEach(feature => createMarker(feature, 'parcels'));
 
             // Update path to trails data
             fetch("../data/trolley-line-trails.geojson")
               .then((response) => response.json())
-              .then((data) => {
+              .then((trailData) => {
                 map.addSource("trails", {
                   type: "geojson",
-                  data: data,
+                  data: trailData,
                 });
 
                 // Add a casing/outline layer for bridges
@@ -547,13 +844,13 @@
                       ["linear"],
                       ["zoom"],
                       12,
-                      6, // At zoom level 12, width is 6px
+                      6,
                       14,
-                      8, // At zoom level 14, width is 8px
+                      8,
                       16,
-                      12, // At zoom level 16, width is 12px
+                      12,
                       18,
-                      16, // At zoom level 18, width is 16px
+                      16,
                     ],
                     "line-opacity": 0.5,
                   },
@@ -579,34 +876,8 @@
                   },
                 });
 
-                // Define info marker locations for trails
-                // Create markers for features that have marker coordinates
-                data.features.forEach((feature) => {
-                  if (feature.properties.marker) {
-                    const el = document.createElement('div');
-                    el.className = 'marker';
-                    el.innerHTML = '<span class="material-icons">info</span>';
-
-                    const marker = new mapboxgl.Marker(el)
-                      .setLngLat(feature.properties.marker)
-                      .addTo(map);
-
-                    el.addEventListener('click', () => {
-                      // Deselect previous marker if exists
-                      if (activeMarker) {
-                        activeMarker.getElement().classList.remove('active');
-                      }
-
-                      // Select new marker
-                      el.classList.add('active');
-                      activeMarker = marker;
-
-                      // Show info panel
-                      parcelDescription.innerHTML = feature.properties.description || 'No description available';
-                      infoPanel.classList.add('visible');
-                    });
-                  }
-                });
+                // Create markers for trails that have marker coordinates
+                trailData.features.forEach(feature => createMarker(feature, 'trails'));
               });
           });
       });
