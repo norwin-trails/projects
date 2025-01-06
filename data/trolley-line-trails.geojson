@@ -16,7 +16,8 @@
         "option": 1,
         "is-bridge": true,
         "description": "The trolley line entered Irwin on a bridge over Tinkers Run in this area.<br><br>A pedestrian bridge could be reconstructed here. This would provide a scenic and accessible pedestrian entrance to downtown Irwin. Hilltop Park would be 0.5 miles from downtown Irwin.",
-        "marker": [-79.7122902, 40.3323461]
+        "marker": [-79.7122902, 40.3323461],
+        "zoom": 16.5
       },
       "geometry": {
         "type": "MultiLineString",
@@ -96,7 +97,8 @@
         "option": 1,
         "is-bridge": false,
         "description": "On-street alternate route to carry bikers between the trail and Irwin.<br><br>This would be the primary route until the 4th Street pedestrian bridge is proven to be feasible and constructed.",
-        "marker": [-79.7124248, 40.3337883]
+        "marker": [-79.7124248, 40.3337883],
+        "zoom": 16.5
       },
       "geometry": {
         "type": "MultiLineString",

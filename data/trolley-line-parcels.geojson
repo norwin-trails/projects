@@ -13,7 +13,8 @@
         "name": "Private Landowner",
         "description": "This privately owned wooded parcel is situated between Hilltop Park and the West Penn Power property.<br/><br/>This property would be acquired in order to expand the park's trail system and provide easy access between the Trolley Line and Hilltop Park.",
         "type": "private",
-        "marker": [-79.720221, 40.334322]
+        "marker": [-79.720221, 40.334322],
+        "zoom": 16.5
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -75,7 +76,8 @@
         "name": "Hilltop Park",
         "description": "Hilltop Park is a primarily wooded area featuring several trails, though they currently require maintenance. <br/><br/>Plans include expanding and enhancing the trails to ensure they are sustainable and suitable for both hiking and mountain biking.",
         "type": "public",
-        "marker": [-79.720546, 40.333336]
+        "marker": [-79.720546, 40.333336],
+        "zoom": 15.5
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -656,7 +658,8 @@
         "name": "Probable Right of Way",
         "description": "The West Penn Railways trolley formerly operated along this route. Westmoreland County records has no parcel recorded here, suggesting the right of way likely remains intact.",
         "type": "right of way",
-        "marker": [-79.72592, 40.340738]
+        "marker": [-79.72592, 40.340738],
+        "zoom": 16.5
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -878,7 +881,8 @@
         "name": "Private Landowner",
         "description": "This 11-acre wooded property with a small stream and rugged terrain is privately owned and is currently for sale.<br/><br/> It offers a potential trailhead on Whitney Chase Lane, giving the neighborhood easy access to the trail.",
         "type": "private",
-        "marker": [-79.726751, 40.33779]
+        "marker": [-79.726751, 40.33779],
+        "zoom": 16
       },
       "geometry": {
         "type": "MultiPolygon",

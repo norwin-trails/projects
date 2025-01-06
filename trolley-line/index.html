@@ -775,12 +775,19 @@
                 backButton.style.display = currentTourIndex > 0 ? 'inline-block' : 'none';
                 nextButton.textContent = currentTourIndex === markers.length - 1 ? 'Finish' : 'Next';
 
+                // Calculate offset based on screen size
+                const isMobile = window.innerWidth <= 768;
+                const verticalOffset = isMobile ? 100 : -50;  // More offset on mobile
+
+                // Get zoom level from feature properties or default to 15
+                const zoomLevel = feature.properties.zoom || 15;
+
                 // Only zoom and center during tour mode
                 map.flyTo({
                   center: marker.getLngLat(),
-                  zoom: 16,
+                  zoom: zoomLevel,
                   duration: 1000,
-                  offset: [0, -100]  // Offset to account for info panel
+                  offset: [0, verticalOffset]  // Responsive offset
                 });
               } else {
                 tourControls.style.display = 'none';
