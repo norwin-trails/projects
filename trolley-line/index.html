@@ -523,9 +523,17 @@
         fetch("../data/trolley-line-parcels.geojson")
           .then((response) => response.json())
           .then((data) => {
+            // Ensure each feature has an ID
+            data.features.forEach((feature, index) => {
+              if (!feature.properties.id) {
+                feature.properties.id = `parcel-${index}`;
+              }
+            });
+
             map.addSource("parcels", {
               type: "geojson",
               data: data,
+              promoteId: 'id'  // Use the id property as feature ID
             });
 
             map.addLayer({
@@ -574,7 +582,26 @@
                   "#B8860B",
                   "#444444",
                 ],
-                "line-width": 1.5,
+                "line-width": ["case",
+                  ["boolean", ["feature-state", "selected"], false],
+                  10,  // Selected width
+                  1.5 // Default width
+                ],
+                // "line-opacity": ["case",
+                //   ["boolean", ["feature-state", "selected"], false],
+                //   0.15,  // Selected opacity
+                //   1.0 // Default opacity
+                // ],
+                "line-blur": ["case",
+                  ["boolean", ["feature-state", "selected"], false],
+                  5,  // Selected blur
+                  0 // Default blur
+                ],
+                "line-offset": ["case",
+                  ["boolean", ["feature-state", "selected"], false],
+                  -2,  // Selected offset
+                  0   // Default offset
+                ]
               },
             });
 
@@ -700,12 +727,42 @@
               }
             }
 
+            // Function to update highlighted feature
+            function updateHighlightedFeature(feature) {
+              // Clear previous feature state if it exists
+              if (activeMarker && activeMarker._feature) {
+                map.setFeatureState(
+                  { 
+                    source: activeMarker._layer, 
+                    id: activeMarker._feature.properties.id,
+                    sourceLayer: undefined
+                  },
+                  { selected: false }
+                );
+              }
+              
+              // Set new feature state if a feature is provided
+              if (feature) {
+                map.setFeatureState(
+                  { 
+                    source: feature._layer, 
+                    id: feature.properties.id,
+                    sourceLayer: undefined
+                  },
+                  { selected: true }
+                );
+              }
+            }
+
             // Function to trigger marker click programmatically
             function triggerMarkerClick(marker) {
               // Update active marker
               if (activeMarker !== marker) {
+                // Clear previous marker's feature state
+                updateHighlightedFeature(null);
                 activeMarker = marker;
                 updateSelectedMarker(marker);
+                updateHighlightedFeature(marker._feature);
               }
               
               const feature = marker._feature;
@@ -744,6 +801,7 @@
                 // Store feature data on marker for tour
                 marker._feature = feature;
                 marker._layer = layer;
+                feature._layer = layer;  // Also store layer on feature
                 
                 // Store marker by its layer/id key
                 const key = `${layer}:${feature.properties.id}`;
@@ -790,6 +848,8 @@
                 tourControls.style.display = 'none';
                 infoPanel.classList.remove('visible');
                 if (activeMarker) {
+                  updateSelectedMarker(null);
+                  updateHighlightedFeature(null);
                   activeMarker.getElement().classList.remove('active');
                   activeMarker = null;
                 }
@@ -810,6 +870,7 @@
               infoPanel.classList.remove('visible');
               if (activeMarker) {
                 updateSelectedMarker(null);
+                updateHighlightedFeature(null);
                 activeMarker = null;
               }
               if (isTourActive) {
@@ -826,19 +887,26 @@
             fetch("../data/trolley-line-trails.geojson")
               .then((response) => response.json())
               .then((trailData) => {
+                // Ensure each feature has an ID
+                trailData.features.forEach((feature, index) => {
+                  if (!feature.properties.id) {
+                    feature.properties.id = `trail-${index}`;
+                  }
+                });
+
                 map.addSource("trails", {
                   type: "geojson",
                   data: trailData,
+                  promoteId: 'id'  // Use the id property as feature ID
                 });
 
                 // Add a casing/outline layer for bridges
                 map.addLayer({
-                  id: "trails-bridge-casing",
+                  id: "trails-casing",
                   type: "line",
                   source: "trails",
-                  filter: ["==", ["get", "is-bridge"], true],
                   paint: {
-                    "line-color": "#FF69B4",
+                    "line-color": "#E6B3FF",
                     "line-width": [
                       "interpolate",
                       ["linear"],
@@ -852,7 +920,11 @@
                       18,
                       16,
                     ],
-                    "line-opacity": 0.5,
+                    "line-opacity": ["case",
+                      ["boolean", ["feature-state", "selected"], false],
+                      0.65,  // Selected opacity
+                      0 // Default opacity
+                    ]
                   },
                   layout: {
                     "line-cap": "round",
@@ -866,7 +938,11 @@
                   source: "trails",
                   paint: {
                     "line-color": "#8B00FF",
-                    "line-width": 3,
+                    "line-width": ["case",
+                      ["boolean", ["feature-state", "selected"], false],
+                      6,  // Selected width
+                      3   // Default width
+                    ],
                     "line-opacity": 0.8,
                     "line-dasharray": [2, 2],
                   },
