@@ -226,16 +226,16 @@
 
       // Define trail colors
       const trailColors = {
-        Christmas: "#E63946",
-        "Eagle #1": "#1D3557",
-        Forest: "#2A9D8F",
-        "Look Out": "#E9C46A",
-        "Look Out East": "#F4A261",
-        "No Name": "#457B9D",
-        "No Name North Loop": "#4A7B8B",
-        "South Connector": "#E76F51",
-        "South End": "#264653",
-        "Switch Board": "#FFB703",
+        "Johnny's Trail": "#E63946", // Bright red
+        "Eagle #1": "#1E88E5", // Bright blue
+        Forest: "#2E7D32", // Forest green
+        "Look Out": "#9C27B0", // Purple
+        "Look Out East": "#FF6D00", // Orange
+        "Trail B": "#FFD600", // Yellow
+        "Arrowhead": "#795548", // Brown
+        "South Connector": "#00BCD4", // Cyan
+        "South End": "#F06292", // Pink
+        "Switch Board": "#7CB342", // Lime green
       };
 
       map.on("load", () => {
@@ -251,6 +251,7 @@
               id: "trails-layer",
               type: "line",
               source: "trails",
+              filter: ["!=", ["get", "Unmaintained"], true],
               layout: {
                 "line-join": "round",
                 "line-cap": "round",
@@ -259,8 +260,8 @@
                 "line-color": [
                   "match",
                   ["get", "Name"],
-                  "Christmas",
-                  trailColors["Christmas"],
+                  "Johnny's Trail",
+                  trailColors["Johnny's Trail"],
                   "Eagle #1",
                   trailColors["Eagle #1"],
                   "Forest",
@@ -269,10 +270,10 @@
                   trailColors["Look Out"],
                   "Look Out East",
                   trailColors["Look Out East"],
-                  "No Name",
-                  trailColors["No Name"],
-                  "No Name North Loop",
-                  trailColors["No Name North Loop"],
+                  "Trail B",
+                  trailColors["Trail B"],
+                  "Arrowhead",
+                  trailColors["Arrowhead"],
                   "South Connector",
                   trailColors["South Connector"],
                   "South End",
@@ -290,6 +291,7 @@
               id: "trail-labels",
               type: "symbol",
               source: "trails",
+              filter: ["!=", ["get", "Unmaintained"], true],
               layout: {
                 "text-field": ["get", "Name"],
                 "text-size": 12,
