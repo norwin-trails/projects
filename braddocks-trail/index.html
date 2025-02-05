@@ -134,6 +134,35 @@
         line-height: 1.5;
       }
 
+      .trail-legend {
+        margin-top: 15px;
+        border-top: 1px solid #ddd;
+        padding-top: 15px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        margin: 4px 0;
+        cursor: pointer;
+      }
+
+      .legend-color {
+        width: 20px;
+        height: 8px;
+        border-radius: 4px;
+        margin-right: 8px;
+        transition: transform 0.2s;
+      }
+
+      .legend-item:hover .legend-color {
+        transform: scale(1.2);
+      }
+
+      .legend-name {
+        font-size: 12px;
+      }
+
       /* Mobile responsive styles */
       @media screen and (max-width: 768px) {
         .about-panel {
@@ -172,9 +201,7 @@
     </div>
 
     <div class="about-panel">
-      <h3>
-        Braddock's Trail Park Trails
-      </h3>
+      <h3>Braddock's Trail Park Trails</h3>
       <button class="about-toggle collapsed">
         <span>Braddock's Trail Park Trails</span>
         <span class="material-icons">expand_more</span>
@@ -182,10 +209,13 @@
       <div class="about-content">
         <p>
           In cooperation with the North Huntingdon Township, Friends of Norwin
-          Trails provides volunteer maintenance for the hiking and biking trails throughout 
-          the park. 
+          Trails provides volunteer maintenance for the hiking and biking trails
+          throughout the park.
         </p>
-        <p style="margin-top: 16px; font-size: 11px"">
+        <div class="trail-legend">
+          <div id="legend-items"></div>
+        </div>
+        <p style="margin-top: 16px; font-size: 11px">
           See other projects by <a href="..">Friends of Norwin Trails</a>
         </p>
       </div>
@@ -232,13 +262,29 @@
         "Look Out": "#9C27B0", // Purple
         "Look Out East": "#FF6D00", // Orange
         "Trail B": "#FFD600", // Yellow
-        "Arrowhead": "#795548", // Brown
+        Arrowhead: "#795548", // Brown
         "South Connector": "#00BCD4", // Cyan
         "South End": "#F06292", // Pink
         "Switch Board": "#7CB342", // Lime green
       };
 
       map.on("load", () => {
+        // Add the highlight layer first
+        map.addLayer({
+          id: "trail-highlight",
+          type: "line",
+          source: {
+            type: "geojson",
+            data: { type: "FeatureCollection", features: [] },
+          },
+          paint: {
+            "line-color": ["get", "highlightColor"],
+            "line-width": 10,
+            "line-opacity": 0.4,
+            "line-blur": 5,
+          },
+        });
+
         fetch("../data/braddocks-trail-trails.geojson")
           .then((response) => response.json())
           .then((data) => {
@@ -312,6 +358,49 @@
                 "text-halo-width": 2,
                 "text-halo-blur": 1,
               },
+            });
+
+            // Add legend items
+            const legendContainer = document.getElementById("legend-items");
+            Object.entries(trailColors).forEach(([name, color]) => {
+              const item = document.createElement("div");
+              item.className = "legend-item";
+              item.innerHTML = `
+                <div class="legend-color" style="background-color: ${color}"></div>
+                <div class="legend-name">${name}</div>
+              `;
+
+              item.addEventListener("click", () => {
+                // Find the trail feature
+                const feature = data.features.find(
+                  (f) => f.properties.Name === name
+                );
+                if (!feature) return;
+
+                // Update highlight layer
+                map.getSource("trail-highlight").setData({
+                  type: "FeatureCollection",
+                  features: [
+                    {
+                      ...feature,
+                      properties: {
+                        ...feature.properties,
+                        highlightColor: color,
+                      },
+                    },
+                  ],
+                });
+              });
+
+              legendContainer.appendChild(item);
+            });
+
+            // Add click handler to clear highlight when clicking the map
+            map.on("click", () => {
+              map.getSource("trail-highlight").setData({
+                type: "FeatureCollection",
+                features: [],
+              });
             });
           });
       });
