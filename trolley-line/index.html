@@ -514,8 +514,8 @@
       const map = new mapboxgl.Map({
         container: "map",
         style: "mapbox://styles/dnak/cm3ua6jw3000801qrfm6f1rqn",
-        center: [-79.720268, 40.335236], // This should be updated with Trolley Line coordinates
-        zoom: 15,
+        center: [-79.72289019789058, 40.33841682180058], // This should be updated with Trolley Line coordinates
+        zoom: 14.5,
       });
 
       map.on("load", () => {
@@ -673,7 +673,8 @@
               { layer: 'trails', id: '6' },
               { layer: 'trails', id: '52' },
               { layer: 'parcels', id: '7' },
-              { layer: 'parcels', id: '4' }
+              { layer: 'parcels', id: '4' },
+              { layer: 'trails', id: '11' }
             ];
             let currentTourIndex = -1;
             let isTourActive = false;
@@ -944,14 +945,30 @@
                   type: "line",
                   source: "trails",
                   paint: {
-                    "line-color": "#8B00FF",
+                    "line-color": [
+                      "case",
+                      ["any", 
+                        ["==", ["get", "existing"], true],
+                        ["==", ["get", "existing"], "true"]
+                      ],
+                      "#2E8B57", // Green for existing trails
+                      "#8B00FF"  // Purple for proposed trails
+                    ],
                     "line-width": ["case",
                       ["boolean", ["feature-state", "selected"], false],
                       6,  // Selected width
                       3   // Default width
                     ],
                     "line-opacity": 0.8,
-                    "line-dasharray": [2, 2],
+                    "line-dasharray": [
+                      "case",
+                      ["any",
+                        ["==", ["get", "existing"], true],
+                        ["==", ["get", "existing"], "true"]
+                      ],
+                      ["literal", [1]], // Solid line for existing trails
+                      ["literal", [2, 2]] // Dashed line for proposed trails
+                    ]
                   },
                   layout: {
                     "line-cap": "round",
