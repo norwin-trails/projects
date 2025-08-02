@@ -11,7 +11,7 @@
       "properties": {
         "id": "3",
         "name": "Private Landowner",
-        "description": "This privately owned wooded parcel is situated between Hilltop Park and the West Penn Power property.<br/><br/>This property would be acquired in order to expand the park's trail system and provide easy access between the Trolley Line and Hilltop Park.",
+        "description": "This privately owned wooded parcel is situated between Hilltop Park and the West Penn Power property.<br/><br/>This property could be acquired or provide an easement in order to expand the park's trail system and provide easy access between the Trolley Line and Hilltop Park.",
         "type": "private",
         "marker": [-79.720221, 40.334322],
         "zoom": 16.5
@@ -879,7 +879,7 @@
       "properties": {
         "id": "7",
         "name": "Private Landowner",
-        "description": "This 11-acre wooded property with a small stream and rugged terrain is privately owned and is currently for sale.<br/><br/> It offers a potential trailhead on Whitney Chase Lane, giving the neighborhood easy access to the trail.",
+        "description": "This 11-acre wooded property with a small stream and rugged terrain is privately owned.<br/><br/> It offers a potential trailhead on Whitney Chase Lane, giving the neighborhood easy access to the trail. An easement or acquisition would be required.",
         "type": "private",
         "marker": [-79.726751, 40.33779],
         "zoom": 16
